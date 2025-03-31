@@ -20,7 +20,13 @@ class LoggingFilter : Filter {
         try {
             filterChain.doFilter(wrappedRequest, res)
         } finally {
-            println("el body recibido: " + wrappedRequest.contentAsString)
+            val contentAsString = wrappedRequest.contentAsString
+            val responseAsString = CustomThreadLocal.responseBodyString.get()
+
+            println("Request: $contentAsString")
+            println("Response: $responseAsString")
+
         }
+
     }
 }
