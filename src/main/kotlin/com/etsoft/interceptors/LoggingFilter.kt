@@ -5,7 +5,9 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.util.ContentCachingRequestWrapper
+import org.springframework.web.util.ContentCachingResponseWrapper
 
 class LoggingFilter : Filter {
 
@@ -15,14 +17,17 @@ class LoggingFilter : Filter {
         filterChain: FilterChain
     ) {
         val castedRequest = req as HttpServletRequest
+        val castedResponse = res as HttpServletResponse
         val wrappedRequest = ContentCachingRequestWrapper(castedRequest)
+        val wrappedResponse = ContentCachingResponseWrapper(castedResponse)
 
         try {
-            filterChain.doFilter(wrappedRequest, res)
+            filterChain.doFilter(wrappedRequest, wrappedResponse)
         } finally {
             val contentAsString = wrappedRequest.contentAsString
-            val responseAsString = CustomThreadLocal.responseBodyString.get()
+            val responseAsString = String(wrappedResponse.contentAsByteArray)
 
+            wrappedResponse.copyBodyToResponse()
             println("Request: $contentAsString")
             println("Response: $responseAsString")
 

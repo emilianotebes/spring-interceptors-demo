@@ -16,13 +16,3 @@ class FilterConfig {
         return registration;
     }
 }
-
-
-@Configuration
-class WebConfiguration : WebMvcConfigurer {
-
-    @Override
-    override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(CustomInterceptor());
-    }
-}
